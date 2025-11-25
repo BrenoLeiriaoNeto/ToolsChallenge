@@ -19,7 +19,7 @@ public class FormaPagamento {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TipoPagamento tipoPagamento;
+    private TipoPagamento tipo;
 
     @Column(nullable = false)
     private String parcelas;
