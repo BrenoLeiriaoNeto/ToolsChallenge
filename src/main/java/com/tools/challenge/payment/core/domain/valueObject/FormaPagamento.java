@@ -22,5 +22,5 @@ public class FormaPagamento {
     private TipoPagamento tipo;
 
     @Column(nullable = false)
-    private String parcelas;
+    private int parcelas;
 }

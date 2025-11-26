@@ -5,6 +5,8 @@ import com.tools.challenge.payment.core.domain.valueObject.FormaPagamento;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -30,4 +32,7 @@ public class Pagamento {
 
     @Embedded
     private FormaPagamento formaPagamento;
+
+    @OneToMany(mappedBy = "pagamento", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Parcela> parcelas = new ArrayList<>();
 }

@@ -4,6 +4,10 @@ import com.tools.challenge.payment.core.application.contracts.PagamentoInputMode
 import com.tools.challenge.payment.core.application.contracts.PagamentoViewModel;
 import com.tools.challenge.payment.core.application.mapping.IPagamentoMapper;
 import com.tools.challenge.payment.core.domain.Pagamento;
+import com.tools.challenge.payment.core.domain.Parcela;
+import com.tools.challenge.payment.core.domain.enums.StatusPagamento;
+import com.tools.challenge.payment.core.domain.enums.StatusParcela;
+import com.tools.challenge.payment.core.domain.enums.TipoPagamento;
 import com.tools.challenge.payment.infrastructure.persistence.command.IPagamentoCommandRepository;
 import com.tools.challenge.payment.infrastructure.persistence.query.IPagamentoQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +27,18 @@ public class PagamentoService {
 
     public PagamentoViewModel criarPagamento(PagamentoInputModel input) {
         Pagamento pagamento = mapper.toDomain(input);
+
+        List<Parcela> parcelas = Parcela.gerarParcelas(pagamento);
+
+        if (pagamento.getFormaPagamento().getTipo().equals(TipoPagamento.AVISTA)) {
+            parcelas.forEach(p -> p.setStatus(StatusParcela.PAGA));
+            pagamento.getDescricao().setStatus(StatusPagamento.AUTORIZADO);
+        }
+
+        pagamento.setParcelas(parcelas);
+
         Pagamento salvo = pagamentoCommandRepository.save(pagamento);
+
         return mapper.toViewModel(salvo);
     }
 
