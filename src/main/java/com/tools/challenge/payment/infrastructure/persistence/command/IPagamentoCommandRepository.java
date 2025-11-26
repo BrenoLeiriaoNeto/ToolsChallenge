@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface PagamentoCommandRepository extends JpaRepository<Pagamento, UUID> {
+public interface IPagamentoCommandRepository extends JpaRepository<Pagamento, UUID> {
 }
