@@ -1,8 +1,10 @@
 package com.tools.challenge.payment.core.application.contracts;
 
+import java.util.UUID;
+
 public record PagamentoViewModel(
         String cartao,
-        String id,
+        UUID id,
         DescricaoViewModel descricao,
         FormaPagamentoViewModel formaPagamento
 ) {
