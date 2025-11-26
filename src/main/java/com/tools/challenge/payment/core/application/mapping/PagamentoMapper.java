@@ -1,9 +1,6 @@
 package com.tools.challenge.payment.core.application.mapping;
 
-import com.tools.challenge.payment.core.application.contracts.DescricaoViewModel;
-import com.tools.challenge.payment.core.application.contracts.FormaPagamentoViewModel;
-import com.tools.challenge.payment.core.application.contracts.PagamentoInputModel;
-import com.tools.challenge.payment.core.application.contracts.PagamentoViewModel;
+import com.tools.challenge.payment.core.application.contracts.*;
 import com.tools.challenge.payment.core.domain.Pagamento;
 import com.tools.challenge.payment.core.domain.enums.TipoPagamento;
 import com.tools.challenge.payment.core.domain.valueObject.Descricao;
@@ -13,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Component
 public class PagamentoMapper implements IPagamentoMapper {
@@ -34,6 +32,15 @@ public class PagamentoMapper implements IPagamentoMapper {
 
     @Override
     public PagamentoViewModel toViewModel(Pagamento pagamento) {
+        List<ParcelaViewModel> parcelasView = pagamento.getParcelas().stream()
+                .map(p -> new ParcelaViewModel(
+                        p.getNumero(),
+                        p.getValor(),
+                        p.getDataVencimento(),
+                        p.getStatus().name()
+                ))
+                .toList();
+
         return new PagamentoViewModel(
                 pagamento.getCartao(),
                 pagamento.getId(),
@@ -48,7 +55,8 @@ public class PagamentoMapper implements IPagamentoMapper {
                 new FormaPagamentoViewModel(
                         pagamento.getFormaPagamento().getTipo().getFormaPagamento(),
                         pagamento.getFormaPagamento().getParcelas()
-                )
+                ),
+                parcelasView
         );
     }
 }
