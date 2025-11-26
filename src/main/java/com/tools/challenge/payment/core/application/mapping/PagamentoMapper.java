@@ -28,7 +28,7 @@ public class PagamentoMapper implements IPagamentoMapper {
                 .formaPagamento(new FormaPagamento(
                         TipoPagamento.valueOf(input.formaPagamento().tipo().replace(" ", "_")
                                 .toUpperCase()),
-                        input.formaPagamento().parcelas()
+                        Integer.parseInt(input.formaPagamento().parcelas())
                 )).build();
     }
 
