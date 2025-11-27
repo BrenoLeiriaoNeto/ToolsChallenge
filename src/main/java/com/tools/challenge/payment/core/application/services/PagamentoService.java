@@ -1,7 +1,8 @@
 package com.tools.challenge.payment.core.application.services;
 
-import com.tools.challenge.payment.core.application.contracts.PagamentoInputModel;
-import com.tools.challenge.payment.core.application.contracts.PagamentoViewModel;
+import com.tools.challenge.payment.core.application.contracts.models.input.PagamentoInputModel;
+import com.tools.challenge.payment.core.application.contracts.models.view.PagamentoViewModel;
+import com.tools.challenge.payment.core.application.contracts.interfaces.IPagamentoService;
 import com.tools.challenge.payment.core.application.mapping.IPagamentoMapper;
 import com.tools.challenge.payment.core.domain.Pagamento;
 import com.tools.challenge.payment.core.domain.Parcela;
@@ -19,7 +20,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class PagamentoService {
+public class PagamentoService implements IPagamentoService {
 
     private final IPagamentoCommandRepository pagamentoCommandRepository;
     private final IPagamentoQueryRepository pagamentoQueryRepository;
@@ -30,7 +31,7 @@ public class PagamentoService {
 
         List<Parcela> parcelas = Parcela.gerarParcelas(pagamento);
 
-        if (pagamento.getFormaPagamento().getTipo().equals(TipoPagamento.AVISTA)) {
+        if (pagamento.getFormaPagamento().getTipo().equals(TipoPagamento.AVISTA) && parcelas.size() == 1) {
             parcelas.forEach(p -> p.setStatus(StatusParcela.PAGA));
             pagamento.getDescricao().setStatus(StatusPagamento.AUTORIZADO);
         }

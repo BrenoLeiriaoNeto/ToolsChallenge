@@ -1,4 +1,4 @@
-package com.tools.challenge.payment.core.application.contracts;
+package com.tools.challenge.payment.core.application.contracts.models.view;
 
 public record FormaPagamentoViewModel(
         String tipo,

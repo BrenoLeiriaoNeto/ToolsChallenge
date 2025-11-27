@@ -1,6 +1,9 @@
 package com.tools.challenge.payment.core.application.mapping;
 
-import com.tools.challenge.payment.core.application.contracts.*;
+import com.tools.challenge.payment.core.application.contracts.models.input.PagamentoInputModel;
+import com.tools.challenge.payment.core.application.contracts.models.input.TransacaoInputModel;
+import com.tools.challenge.payment.core.application.contracts.models.view.*;
+import com.tools.challenge.payment.core.application.utils.CartaoMaskUtil;
 import com.tools.challenge.payment.core.domain.Pagamento;
 import com.tools.challenge.payment.core.domain.enums.TipoPagamento;
 import com.tools.challenge.payment.core.domain.valueObject.Descricao;
@@ -16,17 +19,21 @@ import java.util.List;
 public class PagamentoMapper implements IPagamentoMapper {
     @Override
     public Pagamento toDomain(PagamentoInputModel input) {
+        System.out.println("AQUI ESTA VINDO AS INFORMACOES DO PAGAMENTO ----> " + input);
+
+        TransacaoInputModel tim = input.transacao();
+
         return Pagamento.builder()
-                .cartao(input.cartao())
+                .cartao(tim.cartao())
                 .descricao(Descricao.create(
-                        new BigDecimal(input.valor()),
-                        LocalDateTime.parse(input.dataHora(), DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")),
-                        input.estabelecimento()
+                        new BigDecimal(tim.descricao().valor()),
+                        LocalDateTime.parse(tim.descricao().dataHora(), DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")),
+                        tim.descricao().estabelecimento()
                 ))
                 .formaPagamento(new FormaPagamento(
-                        TipoPagamento.valueOf(input.formaPagamento().tipo().replace(" ", "_")
+                        TipoPagamento.valueOf(tim.formaPagamento().tipo().replace(" ", "_")
                                 .toUpperCase()),
-                        Integer.parseInt(input.formaPagamento().parcelas())
+                        Integer.parseInt(tim.formaPagamento().parcelas())
                 )).build();
     }
 
@@ -41,8 +48,8 @@ public class PagamentoMapper implements IPagamentoMapper {
                 ))
                 .toList();
 
-        return new PagamentoViewModel(
-                pagamento.getCartao(),
+        TransacaoViewModel tvm = new TransacaoViewModel(
+                CartaoMaskUtil.mascarar(pagamento.getCartao()),
                 pagamento.getId(),
                 new DescricaoViewModel(
                         pagamento.getDescricao().getValor(),
@@ -58,5 +65,7 @@ public class PagamentoMapper implements IPagamentoMapper {
                 ),
                 parcelasView
         );
+
+        return new PagamentoViewModel(tvm);
     }
 }
