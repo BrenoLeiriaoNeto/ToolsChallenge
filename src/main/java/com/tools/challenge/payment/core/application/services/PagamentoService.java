@@ -9,6 +9,7 @@ import com.tools.challenge.payment.core.domain.Parcela;
 import com.tools.challenge.payment.core.domain.enums.StatusPagamento;
 import com.tools.challenge.payment.core.domain.enums.StatusParcela;
 import com.tools.challenge.payment.core.domain.enums.TipoPagamento;
+import com.tools.challenge.payment.core.domain.exceptions.PagamentoAvistaException;
 import com.tools.challenge.payment.infrastructure.persistence.command.IPagamentoCommandRepository;
 import com.tools.challenge.payment.infrastructure.persistence.query.IPagamentoQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,11 @@ public class PagamentoService implements IPagamentoService {
     private final IPagamentoMapper mapper;
 
     public PagamentoViewModel criarPagamento(PagamentoInputModel input) {
+        if (input.transacao().formaPagamento().tipo().equals("AVISTA") &&
+        !input.transacao().formaPagamento().parcelas().equals("1")) {
+            throw new PagamentoAvistaException();
+        }
+
         Pagamento pagamento = mapper.toDomain(input);
 
         List<Parcela> parcelas = Parcela.gerarParcelas(pagamento);
