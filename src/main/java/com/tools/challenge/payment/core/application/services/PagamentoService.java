@@ -15,6 +15,7 @@ import com.tools.challenge.payment.infrastructure.persistence.query.IPagamentoQu
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,7 +36,16 @@ public class PagamentoService implements IPagamentoService {
 
         Pagamento pagamento = mapper.toDomain(input);
 
+        BigDecimal saldo = new BigDecimal("200.00");
+
         List<Parcela> parcelas = Parcela.gerarParcelas(pagamento);
+
+        if (pagamento.getDescricao().getValor().compareTo(saldo) > 0) {
+            pagamento.getDescricao().setStatus(StatusPagamento.NEGADO);
+            pagamento.setParcelas(parcelas);
+            Pagamento negado = pagamentoCommandRepository.save(pagamento);
+            return mapper.toViewModel(negado);
+        }
 
         if (pagamento.getFormaPagamento().getTipo().equals(TipoPagamento.AVISTA) && parcelas.size() == 1) {
             parcelas.forEach(p -> p.setStatus(StatusParcela.PAGA));
