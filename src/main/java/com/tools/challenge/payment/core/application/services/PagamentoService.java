@@ -31,7 +31,7 @@ public class PagamentoService implements IPagamentoService {
 
         List<Parcela> parcelas = Parcela.gerarParcelas(pagamento);
 
-        if (pagamento.getFormaPagamento().getTipo().equals(TipoPagamento.AVISTA)) {
+        if (pagamento.getFormaPagamento().getTipo().equals(TipoPagamento.AVISTA) && parcelas.size() == 1) {
             parcelas.forEach(p -> p.setStatus(StatusParcela.PAGA));
             pagamento.getDescricao().setStatus(StatusPagamento.AUTORIZADO);
         }

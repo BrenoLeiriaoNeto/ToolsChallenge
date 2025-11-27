@@ -3,6 +3,7 @@ package com.tools.challenge.payment.core.application.mapping;
 import com.tools.challenge.payment.core.application.contracts.models.input.PagamentoInputModel;
 import com.tools.challenge.payment.core.application.contracts.models.input.TransacaoInputModel;
 import com.tools.challenge.payment.core.application.contracts.models.view.*;
+import com.tools.challenge.payment.core.application.utils.CartaoMaskUtil;
 import com.tools.challenge.payment.core.domain.Pagamento;
 import com.tools.challenge.payment.core.domain.enums.TipoPagamento;
 import com.tools.challenge.payment.core.domain.valueObject.Descricao;
@@ -48,7 +49,7 @@ public class PagamentoMapper implements IPagamentoMapper {
                 .toList();
 
         TransacaoViewModel tvm = new TransacaoViewModel(
-                pagamento.getCartao(),
+                CartaoMaskUtil.mascarar(pagamento.getCartao()),
                 pagamento.getId(),
                 new DescricaoViewModel(
                         pagamento.getDescricao().getValor(),
