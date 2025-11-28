@@ -1,8 +1,6 @@
 package com.tools.challenge.payment.presentation.middleware;
 
-import com.tools.challenge.payment.core.domain.exceptions.PagamentoAvistaException;
-import com.tools.challenge.payment.core.domain.exceptions.PagamentoJaEstornadoException;
-import com.tools.challenge.payment.core.domain.exceptions.PagamentoNaoEncontradoException;
+import com.tools.challenge.payment.core.domain.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -32,6 +30,20 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PagamentoAvistaException.class)
     public ResponseEntity<Map<String, String>> handlePagamentoAvistaException(
             PagamentoAvistaException ex ) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("erro", ex.getMessage()));
+    }
+
+    @ExceptionHandler(NenhumPagamentoEncontradoException.class)
+    public ResponseEntity<Map<String, String>> handleNenhumPagamentoEncontradoException(
+            NenhumPagamentoEncontradoException ex ) {
+        return ResponseEntity.status(200)
+                .body(Map.of("mensagem", ex.getMessage()));
+    }
+
+    @ExceptionHandler(PagamentoNegadoException.class)
+    public ResponseEntity<Map<String, String>> handlePagamentoNegadoException(
+            PagamentoNegadoException ex ) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("erro", ex.getMessage()));
     }

@@ -9,7 +9,7 @@ import com.tools.challenge.payment.core.domain.Parcela;
 import com.tools.challenge.payment.core.domain.enums.StatusPagamento;
 import com.tools.challenge.payment.core.domain.enums.StatusParcela;
 import com.tools.challenge.payment.core.domain.enums.TipoPagamento;
-import com.tools.challenge.payment.core.domain.exceptions.PagamentoAvistaException;
+import com.tools.challenge.payment.core.domain.exceptions.*;
 import com.tools.challenge.payment.infrastructure.persistence.command.IPagamentoCommandRepository;
 import com.tools.challenge.payment.infrastructure.persistence.query.IPagamentoQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -59,18 +59,45 @@ public class PagamentoService implements IPagamentoService {
         return mapper.toViewModel(salvo);
     }
 
-    public Optional<PagamentoViewModel> estorno(UUID id) {
-        return pagamentoQueryRepository.findById(id)
-                .map(mapper::toViewModel);
+    public PagamentoViewModel estornarPagamento(UUID id) {
+        Pagamento pagamento = pagamentoQueryRepository.findById(id)
+                .orElseThrow(PagamentoNaoEncontradoException::new);
+
+        if (pagamento.getDescricao().getStatus().name().equals("CANCELADO")) {
+            throw new PagamentoJaEstornadoException();
+        }
+
+        if (pagamento.getDescricao().getStatus().name().equals("NEGADO")) {
+            throw new PagamentoNegadoException("Este pagamento foi negado, escolha outro pagamento para estornar");
+        }
+
+        pagamento.getDescricao().setStatus(StatusPagamento.CANCELADO);
+        Pagamento estornado = pagamentoCommandRepository.save(pagamento);
+
+        return mapper.toViewModel(estornado);
     }
 
-    public Optional<PagamentoViewModel> consulta(UUID id) {
+    public PagamentoViewModel consultaEstorno(UUID id) {
+        return pagamentoQueryRepository.findByIdAndStatus(id, StatusPagamento.CANCELADO)
+                .map(mapper::toViewModel)
+                .orElseThrow(PagamentoNaoEncontradoException::new);
+    }
+
+    public PagamentoViewModel consulta(UUID id) {
             return pagamentoQueryRepository.findById(id)
-                    .map(mapper::toViewModel);
+                    .map(mapper::toViewModel)
+                    .orElseThrow(PagamentoNaoEncontradoException::new);
     }
 
     public List<PagamentoViewModel> consultaTodos() {
-        return pagamentoQueryRepository.findAll()
-                .stream().map(mapper::toViewModel).toList();
+        List<PagamentoViewModel> pagamentos = pagamentoQueryRepository.findAll().stream()
+                .map(mapper::toViewModel)
+                .toList();
+
+        if (pagamentos.isEmpty()) {
+            throw new NenhumPagamentoEncontradoException("Nenhum pagamento a ser listado.");
+        }
+
+        return pagamentos;
     }
 }
