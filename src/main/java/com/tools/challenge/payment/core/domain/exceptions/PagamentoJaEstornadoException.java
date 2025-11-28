@@ -12,6 +12,6 @@ public class PagamentoJaEstornadoException extends RuntimeException {
     }
 
     public PagamentoJaEstornadoException() {
-        super("Pagamento ja foi estornado.");
+        super("Este pagamento ja foi estornado.");
     }
 }

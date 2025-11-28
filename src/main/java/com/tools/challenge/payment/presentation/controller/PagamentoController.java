@@ -3,7 +3,6 @@ package com.tools.challenge.payment.presentation.controller;
 import com.tools.challenge.payment.core.application.contracts.models.input.PagamentoInputModel;
 import com.tools.challenge.payment.core.application.contracts.models.view.PagamentoViewModel;
 import com.tools.challenge.payment.core.application.contracts.interfaces.IPagamentoService;
-import com.tools.challenge.payment.core.domain.exceptions.PagamentoNaoEncontradoException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,15 +33,19 @@ public class PagamentoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PagamentoViewModel> consulta(@PathVariable UUID id) {
-        return pagamentoService.consulta(id)
-                .map(ResponseEntity::ok)
-                .orElseThrow(PagamentoNaoEncontradoException::new);
+        PagamentoViewModel viewModel = pagamentoService.consulta(id);
+        return ResponseEntity.ok(viewModel);
     }
 
     @GetMapping("/estorno/{id}")
-    public ResponseEntity<PagamentoViewModel> estorno(@PathVariable UUID id) {
-        return pagamentoService.estorno(id)
-                .map(ResponseEntity::ok)
-                .orElseThrow(PagamentoNaoEncontradoException::new);
+    public ResponseEntity<PagamentoViewModel> consultaEstorno(@PathVariable UUID id) {
+        PagamentoViewModel viewModel = pagamentoService.consultaEstorno(id);
+        return ResponseEntity.ok(viewModel);
+    }
+
+    @PutMapping("/estorno/{id}")
+    public ResponseEntity<PagamentoViewModel> estornarPagamento(@PathVariable UUID id) {
+        PagamentoViewModel viewModel = pagamentoService.estornarPagamento(id);
+        return ResponseEntity.ok(viewModel);
     }
 }
