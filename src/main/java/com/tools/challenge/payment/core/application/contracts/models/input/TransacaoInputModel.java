@@ -1,7 +1,6 @@
 package com.tools.challenge.payment.core.application.contracts.models.input;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
