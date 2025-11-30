@@ -25,6 +25,7 @@ public class PagamentoMapper implements IPagamentoMapper {
 
         return Pagamento.builder()
                 .cartao(tim.cartao())
+                .transacaoId(tim.id())
                 .descricao(Descricao.create(
                         new BigDecimal(tim.descricao().valor()),
                         LocalDateTime.parse(tim.descricao().dataHora(), DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")),
@@ -50,7 +51,7 @@ public class PagamentoMapper implements IPagamentoMapper {
 
         TransacaoViewModel tvm = new TransacaoViewModel(
                 CartaoMaskUtil.mascarar(pagamento.getCartao()),
-                pagamento.getId(),
+                pagamento.getTransacaoId(),
                 new DescricaoViewModel(
                         pagamento.getDescricao().getValor(),
                         pagamento.getDescricao().getDataHora(),

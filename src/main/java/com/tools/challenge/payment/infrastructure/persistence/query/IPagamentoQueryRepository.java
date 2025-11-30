@@ -9,5 +9,9 @@ import java.util.UUID;
 
 public interface IPagamentoQueryRepository extends JpaRepository<Pagamento, UUID> {
 
-    Optional<Pagamento> findByIdAndStatus(UUID id, StatusPagamento status);
+    Optional<Pagamento> findByTransacaoIdAndDescricaoStatus(String transacaoId, StatusPagamento status);
+
+    boolean existsPagamentoByTransacaoId(String transacaoId);
+
+    Optional<Pagamento> findByTransacaoId(String transacaoId);
 }

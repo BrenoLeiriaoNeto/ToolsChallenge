@@ -29,6 +29,13 @@ public class PagamentoService implements IPagamentoService {
     private final IPagamentoMapper mapper;
 
     public PagamentoViewModel criarPagamento(PagamentoInputModel input) {
+
+        boolean existe = pagamentoQueryRepository.existsPagamentoByTransacaoId(input.transacao().id());
+
+        if (existe) {
+            throw new TransacaoJaExistenteException("Esta transacao ja existe.");
+        }
+
         if (input.transacao().formaPagamento().tipo().equals("AVISTA") &&
         !input.transacao().formaPagamento().parcelas().equals("1")) {
             throw new PagamentoAvistaException();
@@ -59,8 +66,9 @@ public class PagamentoService implements IPagamentoService {
         return mapper.toViewModel(salvo);
     }
 
-    public PagamentoViewModel estornarPagamento(UUID id) {
-        Pagamento pagamento = pagamentoQueryRepository.findById(id)
+    public PagamentoViewModel estornarPagamento(String transacaoId) {
+
+        Pagamento pagamento = pagamentoQueryRepository.findByTransacaoId(transacaoId)
                 .orElseThrow(PagamentoNaoEncontradoException::new);
 
         if (pagamento.getDescricao().getStatus().name().equals("CANCELADO")) {
@@ -77,14 +85,14 @@ public class PagamentoService implements IPagamentoService {
         return mapper.toViewModel(estornado);
     }
 
-    public PagamentoViewModel consultaEstorno(UUID id) {
-        return pagamentoQueryRepository.findByIdAndStatus(id, StatusPagamento.CANCELADO)
+    public PagamentoViewModel consultaEstorno(String transacaoId) {
+        return pagamentoQueryRepository.findByTransacaoIdAndDescricaoStatus(transacaoId, StatusPagamento.CANCELADO)
                 .map(mapper::toViewModel)
                 .orElseThrow(PagamentoNaoEncontradoException::new);
     }
 
-    public PagamentoViewModel consulta(UUID id) {
-            return pagamentoQueryRepository.findById(id)
+    public PagamentoViewModel consulta(String transacaoId) {
+            return pagamentoQueryRepository.findByTransacaoId(transacaoId)
                     .map(mapper::toViewModel)
                     .orElseThrow(PagamentoNaoEncontradoException::new);
     }

@@ -6,7 +6,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -32,7 +32,7 @@ public class Parcela {
     private BigDecimal valor;
 
     @Column(nullable = false)
-    private LocalDate dataVencimento;
+    private LocalDateTime dataVencimento;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -53,7 +53,7 @@ public class Parcela {
             parcelas.add(Parcela.builder()
                     .numero(i)
                     .valor(valorParcela)
-                    .dataVencimento(pagamento.getDescricao().getDataHora().toLocalDate().plusMonths(i))
+                    .dataVencimento(pagamento.getDescricao().getDataHora().plusMonths(i))
                     .status(StatusParcela.PENDENTE)
                     .pagamento(pagamento)
                     .build());
