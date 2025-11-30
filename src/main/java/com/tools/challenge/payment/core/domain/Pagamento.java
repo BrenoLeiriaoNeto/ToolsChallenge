@@ -27,6 +27,9 @@ public class Pagamento {
     @Column(nullable = false)
     private String cartao;
 
+    @Column(nullable = false, unique = true, length = 19)
+    private String transacaoId;
+
     @Embedded
     private Descricao descricao;
 

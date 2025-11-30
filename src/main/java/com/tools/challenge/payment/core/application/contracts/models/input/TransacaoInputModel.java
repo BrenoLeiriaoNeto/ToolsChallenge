@@ -8,6 +8,9 @@ public record TransacaoInputModel(
         @NotBlank
         @Pattern(regexp = "\\d{16}", message = "Cartão deve conter 16 dígitos numéricos")
         String cartao,
+        @Pattern(regexp = "\\d{19}", message = "O campo 'id' deve conter 19 dígitos numéricos")
+        @NotBlank
+        String id,
         @Valid
         DescricaoInputModel descricao,
         @Valid

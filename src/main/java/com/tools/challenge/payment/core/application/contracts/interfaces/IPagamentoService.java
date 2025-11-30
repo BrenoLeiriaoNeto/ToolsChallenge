@@ -10,8 +10,8 @@ import java.util.UUID;
 public interface IPagamentoService {
 
     PagamentoViewModel criarPagamento(PagamentoInputModel input);
-    PagamentoViewModel estornarPagamento(UUID id);
-    PagamentoViewModel consultaEstorno(UUID id);
-    PagamentoViewModel consulta(UUID id);
+    PagamentoViewModel estornarPagamento(String transacaoId);
+    PagamentoViewModel consultaEstorno(String transacaoId);
+    PagamentoViewModel consulta(String transacaoId);
     List<PagamentoViewModel> consultaTodos();
 }

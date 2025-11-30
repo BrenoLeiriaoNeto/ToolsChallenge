@@ -32,19 +32,19 @@ public class PagamentoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PagamentoViewModel> consulta(@PathVariable UUID id) {
+    public ResponseEntity<PagamentoViewModel> consulta(@PathVariable String id) {
         PagamentoViewModel viewModel = pagamentoService.consulta(id);
         return ResponseEntity.ok(viewModel);
     }
 
     @GetMapping("/estorno/{id}")
-    public ResponseEntity<PagamentoViewModel> consultaEstorno(@PathVariable UUID id) {
+    public ResponseEntity<PagamentoViewModel> consultaEstorno(@PathVariable String id) {
         PagamentoViewModel viewModel = pagamentoService.consultaEstorno(id);
         return ResponseEntity.ok(viewModel);
     }
 
     @PutMapping("/estorno/{id}")
-    public ResponseEntity<PagamentoViewModel> estornarPagamento(@PathVariable UUID id) {
+    public ResponseEntity<PagamentoViewModel> estornarPagamento(@PathVariable String id) {
         PagamentoViewModel viewModel = pagamentoService.estornarPagamento(id);
         return ResponseEntity.ok(viewModel);
     }

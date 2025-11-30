@@ -48,6 +48,13 @@ public class GlobalExceptionHandler {
                 .body(Map.of("erro", ex.getMessage()));
     }
 
+    @ExceptionHandler(TransacaoJaExistenteException.class)
+    public ResponseEntity<Map<String, String>> handleTransacaoJaExistenteException(
+            TransacaoJaExistenteException ex ) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("erro", ex.getMessage()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, List<String>>> handleValidacao(MethodArgumentNotValidException ex) {
         List<String> erros = ex.getBindingResult().getFieldErrors().stream()
